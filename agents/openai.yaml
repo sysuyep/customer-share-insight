@@ -1,0 +1,4 @@
+interface:
+  display_name: "客户洞察分享"
+  short_description: "把企业家访谈做成本人上台讲的分享演示稿、逐页讲稿和洞察报告"
+  default_prompt: "使用 $customer-share-insight 把这份访谈转写做成分享人本人上台讲的经营分享，从分析初稿开始，每个阶段等我确认。"

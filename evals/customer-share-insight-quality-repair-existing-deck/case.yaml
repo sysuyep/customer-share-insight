@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: customer-share-insight-quality-repair-existing-deck
+expected_outcome: |
+  指出旧框架的问题，并重写为逐页框架：每页上屏文字与讲稿要点分开；输出标题连读和自查结果；左边原话加标签的页面改为与内容关系一致的版式；同一数字只上屏一次；去掉第三人称；每个模块有做法页；以确认问题结束，不生成 HTML。
+context:
+  scaffold_script: place-files.sh

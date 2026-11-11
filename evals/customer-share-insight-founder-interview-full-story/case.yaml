@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: customer-share-insight-founder-interview-full-story
+expected_outcome: |
+  完成阶段 1 分析初稿后停下：整理出公开范围、分享人画像、公司画像、关键决定、原话、学习触点、待核实问题和素材缺口；以确认问题结束，并询问分享时长和最终文件格式等任务信息；不进入三个方向，不生成文件。
+context:
+  scaffold_script: place-files.sh

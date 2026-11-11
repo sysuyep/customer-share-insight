@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: page-plan-from-confirmed-direction
+expected_outcome: |
+  写出完整逐页框架：每页有页面主张、上屏文字、讲稿要点、版式且上屏和讲稿分开；输出标题连读和自查结果；导览页与过渡页标题一致；第一人称；每个模块有做法页；页数与 20 分钟匹配；遵守已确认的公开范围；以确认问题结束，不生成 HTML。
+context:
+  scaffold_script: place-files.sh

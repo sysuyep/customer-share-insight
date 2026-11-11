@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【示例】客户洞察报告 · 青禾食品 · 林志远</title>
+<!--
+  客户洞察分享 · 洞察报告模板（customer-share-insight v1111001）
+  用法：复制本文件，改名为 {customer}_{topic}_insight_report.html，替换全部示例内容。
+  六章固定顺序，章节 id 为 s1–s6，不增加其他章节。每章标题写结论，小标签写章节名。
+  强调色只改 --accent / --accent-strong / --accent-soft（深色模式里也有一组）。
+-->
+<style>
+  :root {
+    --accent: #1F4FB8; --accent-strong: #173C8C; --accent-soft: #E6ECF8; --on-accent: #FFFFFF;
+    --bg: #F7F7F4; --surface: #FFFFFF; --surface-2: #EFEFEA;
+    --ink: #1B1D1F; --ink-2: #3E4348; --muted: #6A7076; --line: #DADBD6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --accent: #7FA2EC; --accent-strong: #A9C1F3; --accent-soft: #1D2638; --on-accent: #111316;
+      --bg: #151719; --surface: #1D2023; --surface-2: #24282B;
+      --ink: #ECEDEE; --ink-2: #C9CCCF; --muted: #9AA0A6; --line: #33373B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --accent: #7FA2EC; --accent-strong: #A9C1F3; --accent-soft: #1D2638; --on-accent: #111316;
+    --bg: #151719; --surface: #1D2023; --surface-2: #24282B;
+    --ink: #ECEDEE; --ink-2: #C9CCCF; --muted: #9AA0A6; --line: #33373B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Source Han Sans SC",
+      "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: 16px; line-height: 1.75; color: var(--ink); background: var(--bg);
+    font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+  /* 抬头 */
+  .report-head { background: var(--accent-soft); padding: 64px 0 48px; }
+  .report-kind { font-size: 14px; font-weight: 600; letter-spacing: 0.12em; color: var(--accent-strong); }
+  .report-title { font-size: 40px; line-height: 1.3; font-weight: 700; margin-top: 12px; }
+  .report-title span { color: var(--accent-strong); }
+  .report-meta { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
+  .figures { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 36px; border-top: 1px solid var(--line); }
+  .figure { padding: 20px 20px 0 0; }
+  .figure + .figure { padding-left: 20px; border-left: 1px solid var(--line); }
+  .figure-value { font-size: 34px; font-weight: 700; line-height: 1.1; }
+  .figure-value small { font-size: 15px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .figure-label { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+
+  /* 目录 */
+  .toc { padding: 28px 0; border-bottom: 1px solid var(--line); }
+  .toc ol { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; }
+  .toc a { color: var(--ink-2); text-decoration: none; }
+  .toc a b { color: var(--accent-strong); margin-right: 6px; }
+
+  /* 章节：底色交替区分 */
+  .chapter { padding: 56px 0; }
+  .chapter:nth-of-type(even) { background: var(--surface); }
+  .ch-label { font-size: 14px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent-strong); }
+  .ch-title { font-size: 28px; line-height: 1.4; font-weight: 700; margin-top: 8px; max-width: 900px; }
+  .ch-lede { font-size: 16px; color: var(--ink-2); margin-top: 12px; max-width: 860px; }
+  .ch-body { margin-top: 32px; }
+  h3.sub { font-size: 18px; font-weight: 700; margin: 28px 0 10px; }
+  p + p { margin-top: 10px; }
+  .muted { color: var(--muted); }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; line-height: 1; padding: 5px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent-strong); }
+  .tag.solid { background: var(--accent); color: var(--on-accent); }
+  .tag.plain { background: var(--surface-2); color: var(--ink-2); }
+
+  /* 表格：在自己的区域里横向滚动 */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  thead th { font-size: 13px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--ink-2); }
+  td.group { font-weight: 700; background: var(--accent-soft); color: var(--accent-strong); width: 120px; }
+  td.key { color: var(--ink-2); width: 140px; white-space: nowrap; }
+  td.note { color: var(--muted); font-size: 13px; width: 200px; }
+
+  /* 时间线：竖线 + 节点 */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .tl-item { position: relative; padding-bottom: 26px; }
+  .tl-item::before { content: ""; position: absolute; left: -28px; top: 7px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); }
+  .tl-item.pending::before { background: var(--muted); }
+  .tl-year { font-size: 15px; font-weight: 700; color: var(--accent-strong); }
+  .tl-name { font-size: 18px; font-weight: 700; }
+  .tl-desc { color: var(--ink-2); margin-top: 4px; }
+
+  /* 两栏要点 */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .point { padding: 16px 0; border-top: 1px solid var(--line); }
+  .point h4 { font-size: 16px; font-weight: 700; }
+  .point p { color: var(--ink-2); margin-top: 4px; }
+
+  /* 诊断：挑战 → 判断 → 服务 */
+  .diag { margin-top: 28px; }
+  .diag:first-child { margin-top: 0; }
+  .diag-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--ink-2); }
+  .diag-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .diag-name { font-size: 20px; font-weight: 700; }
+  .diag-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .diag-col { padding: 18px 20px 20px; }
+  .diag-col:nth-child(2) { background: var(--accent-soft); }
+  .diag-col h5 { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+  .diag-col:nth-child(2) h5 { color: var(--accent-strong); }
+  .diag-col dl { font-size: 15px; }
+  .diag-col dt { font-weight: 700; margin-top: 10px; }
+  .diag-col dt:first-child { margin-top: 0; }
+  .diag-col dd { color: var(--ink-2); }
+  .judge-name { font-size: 18px; font-weight: 700; color: var(--accent-strong); }
+  blockquote { margin-top: 8px; padding: 8px 12px; background: var(--surface-2); font-size: 14px; color: var(--ink-2); }
+
+  /* 学习改变：按维度 */
+  .learn { display: grid; grid-template-columns: 120px 1fr 1fr 1fr; border-top: 1px solid var(--line); }
+  .learn > div { padding: 16px 14px 16px 0; }
+  .learn-dim { font-size: 16px; font-weight: 700; color: var(--accent-strong); }
+  .learn h5 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+  .learn p { font-size: 15px; color: var(--ink-2); }
+
+  /* 每章末尾的说明，默认收起 */
+  details.notes { margin-top: 28px; font-size: 14px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 12px; }
+  details.notes summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+  details.notes ul { margin: 10px 0 0 18px; }
+
+  footer { padding: 32px 0 56px; font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .report-title { font-size: 28px; }
+    .figures { grid-template-columns: 1fr 1fr; }
+    .figure:nth-child(3) { padding-left: 0; border-left: 0; }
+    .cols, .diag-grid { grid-template-columns: 1fr; }
+    .learn { grid-template-columns: 1fr; }
+    .learn > div { padding: 8px 0; }
+    .ch-title { font-size: 22px; }
+  }
+  @media print {
+    :root, :root:not([data-theme="light"]) {
+      --accent: #1F4FB8; --accent-strong: #173C8C; --accent-soft: #E6ECF8; --on-accent: #FFFFFF;
+      --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #EFEFEA;
+      --ink: #1B1D1F; --ink-2: #3E4348; --muted: #6A7076; --line: #DADBD6;
+    }
+    .toc { display: none; }
+    details.notes { display: none; }
+    .chapter { break-inside: auto; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header class="report-head">
+  <div class="wrap">
+    <div class="report-kind">客户洞察报告 · 内部使用</div>
+    <h1 class="report-title serif">【示例】客户洞察报告 · <span>青禾食品</span> · 林志远</h1>
+    <div class="report-meta">
+      <span>材料：创始人访谈录音转写（约 2.3 万字）</span>
+      <span>整理日期：2026-11-11</span>
+      <span>标注："推断"为根据原文的判断，"原文未覆盖"为访谈没有涉及</span>
+    </div>
+    <div class="figures">
+      <div class="figure"><div class="figure-value">12<small>年</small></div><div class="figure-label">经营年限</div></div>
+      <div class="figure"><div class="figure-value">320<small>人</small></div><div class="figure-label">直接员工</div></div>
+      <div class="figure"><div class="figure-value">1.6<small>亿元</small></div><div class="figure-label">2024 年营收</div></div>
+      <div class="figure"><div class="figure-value">2<small>座</small></div><div class="figure-label">自有工厂</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="#s1"><b>1</b>客户画像</a></li>
+      <li><a href="#s2"><b>2</b>企业发展时间线</a></li>
+      <li><a href="#s3"><b>3</b>核心业务与经营模式</a></li>
+      <li><a href="#s4"><b>4</b>管理理念与价值观</a></li>
+      <li><a href="#s5"><b>5</b>诊断与机会</a></li>
+      <li><a href="#s6"><b>6</b>博商学习与已发生的改变</a></li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <!-- 第 1 章：分层画像表。一级类目合并单元格，每组只出现一次 -->
+  <section class="chapter" id="s1">
+    <div class="wrap">
+      <div class="ch-label">01 客户画像</div>
+      <h2 class="ch-title serif">一位从学徒做起、重品质胜过重速度的创始人，带着一家正在从老板驱动转向标准驱动的工厂</h2>
+      <div class="ch-body table-wrap">
+        <table>
+          <thead><tr><th>一级类目</th><th>二级类目</th><th>信息</th><th>依据</th></tr></thead>
+          <tbody>
+            <tr><td class="group" rowspan="4">创始人个人</td><td class="key">角色</td><td>创始人、董事长，负责产品和战略</td><td class="note">原文</td></tr>
+            <tr><td class="key">背景</td><td>面点学徒出身，自己做过每一道工序</td><td class="note">原文</td></tr>
+            <tr><td class="key">决策风格</td><td>先试小批量，确定能做好再放大</td><td class="note">推断：多次提到"先试"</td></tr>
+            <tr><td class="key">管理信念</td><td>坏消息要比好消息先到老板这里</td><td class="note">原话</td></tr>
+            <tr><td class="group" rowspan="4">公司</td><td class="key">行业</td><td>家常面点生产与供应</td><td class="note">原文</td></tr>
+            <tr><td class="key">规模</td><td>两座工厂，直接员工 320 人</td><td class="note">原文</td></tr>
+            <tr><td class="key">商业模式</td><td>商超和社区店零售为主，连锁餐饮定制为辅</td><td class="note">原文</td></tr>
+            <tr><td class="key">关键指标</td><td>2024 年营收 1.6 亿元；毛利率原文未覆盖</td><td class="note">部分未覆盖</td></tr>
+            <tr><td class="group" rowspan="2">组织状态</td><td class="key">管理层</td><td>厂长 2 人、班组长 18 人，多数从一线提拔</td><td class="note">原文</td></tr>
+            <tr><td class="key">当前难点</td><td>第三座工厂的厂长人选还没有着落</td><td class="note">原文</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="notes"><summary>说明与依据</summary><ul><li>"推断"表示原文没有直接说，根据多处表述归纳得出。</li><li>营收为本人口述，未见财务报表。</li></ul></details>
+    </div>
+  </section>
+
+  <!-- 第 2 章：公司发展史，竖线加节点；3–5 个节点 -->
+  <section class="chapter" id="s2">
+    <div class="wrap">
+      <div class="ch-label">02 企业发展时间线</div>
+      <h2 class="ch-title serif">每一次扩张之前，都先解决了上一阶段的品质问题</h2>
+      <div class="ch-body timeline">
+        <div class="tl-item"><div class="tl-year">2012</div><div class="tl-name">小作坊起步</div><p class="tl-desc">三个人、一台蒸柜给早餐店供货。瓶颈是产量全靠人手；突破是买下第一条半自动产线。</p></div>
+        <div class="tl-item"><div class="tl-year">2016</div><div class="tl-name">第一座工厂、招牌产品上市</div><p class="tl-desc">研发一年才上市，进入本地商超。瓶颈是品类太多太散；突破是砍掉一半品类。</p></div>
+        <div class="tl-item"><div class="tl-year">2020</div><div class="tl-name">第二座工厂</div><p class="tl-desc">标准写到每个岗位，两座工厂品质一致。</p></div>
+        <div class="tl-item pending"><div class="tl-year">年份原文未覆盖</div><div class="tl-name">进入连锁餐饮定制</div><p class="tl-desc">为连锁品牌做定制供应。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 3 章 -->
+  <section class="chapter" id="s3">
+    <div class="wrap">
+      <div class="ch-label">03 核心业务与经营模式</div>
+      <h2 class="ch-title serif">靠一款招牌产品带动复购，靠稳定品质守住价格</h2>
+      <p class="ch-lede">招牌产品及其口味延伸贡献约六成营收；三年没有参与渠道价格战。</p>
+      <div class="ch-body cols">
+        <div class="point"><h4>收入结构</h4><p>商超和社区店约七成，连锁餐饮定制约三成（推断：按访谈中的门店数估算）。</p></div>
+        <div class="point"><h4>差异化</h4><p>口味稳定、退货率低于 1%，门店愿意多进货。</p></div>
+        <div class="point"><h4>渠道选择</h4><p>优先出货稳定、价格守得住的社区连锁店，暂不做线上低价平台。</p></div>
+        <div class="point"><h4>成本管理</h4><p>原料损耗率从 6.5% 降到 2.1%，一年少浪费约 460 万元。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 4 章 -->
+  <section class="chapter" id="s4">
+    <div class="wrap">
+      <div class="ch-label">04 管理理念与价值观</div>
+      <h2 class="ch-title serif">相信从一线长出来的人，靠兑现承诺留住团队</h2>
+      <div class="ch-body cols">
+        <div class="point"><h4>用人</h4><p>带团队的人优先从内部提拔，专业岗位外部招聘。</p></div>
+        <div class="point"><h4>信息</h4><p>早会只讲问题、责任人和完成时间。</p></div>
+        <div class="point"><h4>激励</h4><p>承诺的奖金一定兑现，被视为所有管理动作的前提。</p></div>
+        <div class="point"><h4>老板的位置</h4><p>规模每上一个台阶，自己就从现场再往后退一步。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 5 章：每条诊断是一条完整思路：挑战 → 判断 → 服务。3–4 条，各讲一个独立问题 -->
+  <section class="chapter" id="s5">
+    <div class="wrap">
+      <div class="ch-label">05 诊断与机会</div>
+      <h2 class="ch-title serif">第三座工厂能否复制品质，取决于能不能先培养出下一任厂长</h2>
+      <div class="ch-body">
+        <article class="diag">
+          <div class="diag-head"><span class="diag-num">1</span><span class="diag-name">管理者储备跟不上扩张速度</span><span class="tag solid">优先级 高</span></div>
+          <div class="diag-grid">
+            <div class="diag-col"><h5>挑战</h5><dl>
+              <dt>表层症状</dt><dd>第三座工厂已在规划，厂长人选还没定。</dd>
+              <dt>深层问题</dt><dd>管理者全靠老板亲自带，带一个人要两三年。</dd>
+              <dt>影响</dt><dd>新厂投产可能推迟，或品质出现波动。</dd>
+              <dt>证据</dt><dd><blockquote>"现在最缺的不是钱，是能独当一面的厂长。"</blockquote></dd>
+            </dl></div>
+            <div class="diag-col"><h5>判断</h5>
+              <div class="judge-name">培养人要比建厂早一步</div>
+              <p>品质靠标准和人共同保证，标准已经写好，缺的是能带着标准跑的人。</p>
+              <p class="muted">适用：多工厂、多门店复制阶段。</p>
+            </div>
+            <div class="diag-col"><h5>服务</h5><dl>
+              <dt>怎么帮</dt><dd>梳理厂长岗位的能力要求，设计一年期的储备计划。</dd>
+              <dt>切入方式</dt><dd>从现有两位厂长的做法总结起，而不是套用外部模型。</dd>
+              <dt>可能的阻力</dt><dd>老板习惯自己带人，不放心交给体系。</dd>
+              <dt>避免的说法</dt><dd>不说"您的管理太依赖个人"，改说"把您带人的经验变成方法"。</dd>
+            </dl></div>
+          </div>
+        </article>
+      </div>
+      <details class="notes"><summary>说明与依据</summary><ul><li>优先级按"影响大小 × 时间紧迫程度"判断。</li></ul></details>
+    </div>
+  </section>
+
+  <!-- 第 6 章：按经营维度分组，只写原文真实涉及的维度 -->
+  <section class="chapter" id="s6">
+    <div class="wrap">
+      <div class="ch-label">06 博商学习与已发生的改变</div>
+      <h2 class="ch-title serif">学习带来的改变集中在战略取舍和目标管理两个方面</h2>
+      <div class="ch-body">
+        <div class="learn">
+          <div class="learn-dim">战略</div>
+          <div><h5>原来的问题</h5><p>什么好卖做什么，品类越做越多。</p></div>
+          <div><h5>触发改变的课程或老师</h5><p>战略课上关于"做减法"的讨论（课程名称原文未说明）。</p></div>
+          <div><h5>现在的状态</h5><p>砍掉一半品类，集中做招牌产品。</p></div>
+        </div>
+        <div class="learn">
+          <div class="learn-dim">目标管理</div>
+          <div><h5>原来的问题</h5><p>年度目标只在年初讲一次。</p></div>
+          <div><h5>触发改变的课程或老师</h5><p>目标拆解相关课程。</p></div>
+          <div><h5>现在的状态</h5><p>拆到月、周、日，班组每天对照。</p></div>
+        </div>
+      </div>
+      <details class="notes"><summary>说明与依据</summary><ul><li>原文没有提到的维度不写。学习记录很少时，写明"原文未覆盖学习记录"。</li></ul></details>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">本报告供内部理解客户和设计后续服务使用，不对外分享。</div></footer>
+</body>
+</html>

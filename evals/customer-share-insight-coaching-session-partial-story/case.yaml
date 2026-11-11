@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: customer-share-insight-coaching-session-partial-story
+expected_outcome: |
+  识别出材料是教练入企对谈、没有完整成长史；发展时间线、营收历史等写明原文未覆盖，不编造；学习触点只用原文提到的内容；完成阶段 1 后停下等确认。
+context:
+  scaffold_script: place-files.sh

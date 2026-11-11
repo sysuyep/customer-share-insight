@@ -1,0 +1,57 @@
+{
+  "skill_name": "customer-share-insight",
+  "evals": [
+    {
+      "id": 1,
+      "name": "founder-interview-full-story",
+      "prompt": "我手头有一份明珠厨电王总的客户故事访谈，文件在 fixtures/mingzhu_founder.md。请基于这份材料，先按这个 skill 的工作流给我 3 个差异化的分享主题方向；我从中选一个之后，再出逐页 PPT 框架逻辑；我确认后再生成 HTML 演示稿、逐页讲稿和客户洞察报告。",
+      "expected_output": "四段式工作流：阶段 1 分析初稿（暂停）→ 阶段 2 三个方向（每个含完整模块架构表，暂停）→ 阶段 3 逐页框架逻辑（暂停）→ 阶段 4 生成 _deck.html / _speaker_notes.md / _insight_report.html 三个真实文件。文件命名使用相同的 {customer}_{topic} 前缀。HTML 演示稿封面+画像之后有且仅有 1 页模块导览（agenda 允许编号），每个模块过渡页（module-opener）禁止 PART/编号。",
+      "files": ["fixtures/mingzhu_founder.md"],
+      "assertions": [
+        {"id": "phase1_pauses_for_confirmation", "text": "阶段 1 输出分析初稿后停下来明确询问用户确认，没有自问自答接着进入阶段 2", "type": "qualitative"},
+        {"id": "phase2_has_three_directions", "text": "阶段 2 提出了恰好 3 个差异化主题方向", "type": "qualitative"},
+        {"id": "phase2_modules_in_codeblock", "text": "每个方向的模块架构表完整放在 markdown 代码块内", "type": "qualitative"},
+        {"id": "phase3_per_page_framework", "text": "阶段 3 输出了 20-25 页的逐页框架逻辑，每页都有页面主张、内容关系和建议展示方式", "type": "qualitative"},
+        {"id": "phase4_three_files_exist", "text": "最终产出 3 个文件：_deck.html + _speaker_notes.md + _insight_report.html，共享 {customer}_{topic} 前缀", "type": "programmatic"},
+        {"id": "deck_is_html_not_pptx", "text": "演示稿交付物是 .html 不是 .pptx", "type": "programmatic"},
+        {"id": "deck_has_slide_sections", "text": "_deck.html 含 .deck 容器和至少 18 个 <section class=\"slide\"> 元素，每个 slide 有 data-page 和 data-role 属性", "type": "programmatic"},
+        {"id": "deck_validate_passes", "text": "scripts/validate_html_deck.py 对生成的 _deck.html 返回 exit code 0", "type": "programmatic"},
+        {"id": "validate_speaker_notes_passes", "text": "scripts/validate_speaker_notes.py 对生成的讲稿返回 exit code 0", "type": "programmatic"},
+        {"id": "agenda_only_once", "text": "整套 deck 中 data-role=\"agenda\" 的 slide 有且仅有 1 个（模块导览页全场唯一）", "type": "programmatic"},
+        {"id": "module_opener_no_part_number", "text": "data-role=\"module-opener\" 的 slide 内文里没有 'PART' 或 '01'/'02'/'03' 等编号字样（页码 .page-num 不算）", "type": "programmatic"},
+        {"id": "layout_diversity", "text": "deck 中至少出现 4 种不同的 data-role 值（版式多样性）", "type": "programmatic"},
+        {"id": "deck_self_contained", "text": "_deck.html 是 self-contained，没有外链 CSS/JS/字体/图片（可选 Google Fonts 必须保持 HTML 注释状态）", "type": "programmatic"},
+        {"id": "insight_report_layered_portrait", "text": "洞察报告开头有一张分层画像表，老板个人画像和公司画像各自一组，没有混写", "type": "qualitative"},
+        {"id": "insight_report_6_sections", "text": "洞察报告严格按规定的 6 章节顺序：客户画像（rowspan 合并）→ 企业发展时间线（横向时间轴）→ 核心业务 → 管理理念 → 诊断与机会（挑战→判断→服务三段一卡的诊断卡链条）→ 博商学习与改变（按经营维度分组：战略/商业模式/团队/领导力等）；没有独立的'客户原话'章节、'关键判断'章节、'未来服务机会点'章节；没有自创栏目；没有重复章节", "type": "qualitative"},
+        {"id": "insight_report_storyblock_cards", "text": "洞察报告的段落型章节（核心业务/管理理念/博商学习与改变/未来服务机会）都包在 .story-block 卡片容器里，没有 raw <p> 直接挂在 section 下", "type": "qualitative"},
+        {"id": "module_has_how_to_page", "text": "每个内容模块（不含封面/画像/导览/收尾）至少有 1 张「我们怎么干」页：method-grid（4 张方法论卡）/ reason-cards（决策原因）/ stage-method（阶段化方法）/ flow / causal-chain 任一即可，不能让模块只停留在'现状+洞察+金句'", "type": "qualitative"},
+        {"id": "no_fixed_skeleton_template", "text": "3 个方向应当反映材料真实内容（亮点/转折/问题/命题/建议/反思 任意切法）；如果 3 个方向都是「经营三力 / 经营四力 / 三大命题」这类同质化骨架的换皮，则不合格——叙事框架应是描述性的，而非固定模板套用", "type": "qualitative"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "coaching-session-partial-story",
+      "prompt": "fixtures/coach_session_haowei.md 是教练上门跟昊伟科技吴总的一次经营对谈记录，不是完整成长史。请帮我把这份对谈做成同学分享的 HTML 演示稿、讲稿和洞察报告。",
+      "expected_output": "skill 能识别这是教练服务对谈而非完整故事访谈，不补写不存在的历史，在没有发展时间线的位置保留显式占位；HTML 演示稿仍然给出可分享的模块结构和金句页；洞察报告里『原文未覆盖』明确标注。",
+      "files": ["fixtures/coach_session_haowei.md"],
+      "assertions": [
+        {"id": "no_fabricated_history", "text": "HTML 演示稿和报告都没有补造原文未出现的年份、营收、团队规模或客户案例", "type": "qualitative"},
+        {"id": "placeholder_for_missing_timeline", "text": "如果做了时间线 slide，未覆盖的节点上显式写了'年份待补充'之类的占位字样", "type": "qualitative"},
+        {"id": "insight_report_marks_unknown", "text": "洞察报告分层画像表里未覆盖的字段标注为'原文未覆盖'或'未明确提及'", "type": "qualitative"},
+        {"id": "phase4_three_files_exist", "text": "最终产出 3 个文件：_deck.html + _speaker_notes.md + _insight_report.html", "type": "programmatic"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "quality-repair-existing-deck",
+      "prompt": "我手头有一份做出来的客户分享 HTML 演示稿，反馈是'页面看起来都像左边摘原话右边贴四个标签，整套没有节奏'。请帮我用这个 skill 的方法重新规划一遍逐页框架，再给我新的 HTML 演示稿。原始访谈在 fixtures/mingzhu_founder.md。",
+      "expected_output": "skill 把'伪结构'识别出来，按正反对照示例里的逻辑，把伪左右结构页改写成金句页/矩阵/对比/因果链等真正服务页面主张的版式；整套 deck 中至少出现 4 种不同 data-role；validate_html_deck.py 通过且无伪结构警告。",
+      "files": ["fixtures/mingzhu_founder.md"],
+      "assertions": [
+        {"id": "layout_diversity_repair", "text": "整套 deck 至少使用 4 种不同的 data-role，不是清一色左右结构或清一色编号结构", "type": "programmatic"},
+        {"id": "deck_validate_passes", "text": "scripts/validate_html_deck.py 对生成的 _deck.html 返回 exit code 0", "type": "programmatic"},
+        {"id": "no_pseudo_structure", "text": "肉眼检查不存在'左边原文摘录 + 右边空泛标签罗列'的伪结构页", "type": "qualitative"}
+      ]
+    }
+  ]
+}

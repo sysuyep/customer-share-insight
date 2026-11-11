@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【示例】青禾食品 · 把一款产品做成顾客记得住的理由</title>
+<!--
+  客户洞察分享 · 演示稿模板（customer-share-insight v1111001）
+
+  用法：
+  1. 复制本文件，改名为 {customer}_{topic}_deck.html。
+  2. 按逐页框架保留需要的版式，删除不用的；同一种版式可以复制多次。
+  3. 把所有示例文字（含"【示例】"字样）替换成真实内容。
+  4. 换强调色只改 :root 里的 --accent / --accent-strong / --accent-soft，
+     以及深色模式里对应的三个值。可选颜色见 references/visual-style.md。
+  5. 每个 section 保留 class="slide 版式名"、data-page、data-role 三个属性。
+  6. 照片转成 base64 写进 style="background-image:url('data:image/jpeg;base64,...')"。
+  7. 投影前想固定浅色：在 <html> 上加 data-theme="light"。
+-->
+<style>
+  :root {
+    /* 强调色：全篇只用这一个 */
+    --accent: #1F4FB8;
+    --accent-strong: #173C8C;
+    --accent-soft: #E6ECF8;
+    --on-accent: #FFFFFF;
+
+    /* 中性色 */
+    --canvas: #E3E3DE;
+    --bg: #F4F4F1;
+    --surface: #FFFFFF;
+    --surface-2: #ECECE7;
+    --ink: #1B1D1F;
+    --ink-2: #3E4348;
+    --muted: #6A7076;
+    --line: #D6D7D2;
+
+    /* 照片页 */
+    --photo-ink: #FFFFFF;
+    --photo-ink-2: #E8E6E1;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --accent: #7FA2EC;
+      --accent-strong: #A9C1F3;
+      --accent-soft: #1D2638;
+      --on-accent: #111316;
+      --canvas: #0E0F10;
+      --bg: #17191B;
+      --surface: #1F2225;
+      --surface-2: #262A2E;
+      --ink: #ECEDEE;
+      --ink-2: #C9CCCF;
+      --muted: #9AA0A6;
+      --line: #34383C;
+    }
+  }
+  :root[data-theme="dark"] {
+    --accent: #7FA2EC;
+    --accent-strong: #A9C1F3;
+    --accent-soft: #1D2638;
+    --on-accent: #111316;
+    --canvas: #0E0F10;
+    --bg: #17191B;
+    --surface: #1F2225;
+    --surface-2: #262A2E;
+    --ink: #ECEDEE;
+    --ink-2: #C9CCCF;
+    --muted: #9AA0A6;
+    --line: #34383C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC",
+      "Source Han Sans SC", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei UI",
+      "Microsoft YaHei", "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    background: var(--canvas);
+    color: var(--ink);
+  }
+
+  /* ===== 浏览外框：所有页面竖向排列，滚动浏览 ===== */
+  .deck-hint {
+    max-width: 1920px; margin: 0 auto; padding: 20px 32px 0;
+    font-size: 14px; color: var(--muted);
+  }
+  .deck {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 40px; padding: 24px 32px 96px;
+  }
+  .slide-wrapper {
+    width: 100%; max-width: 1920px; aspect-ratio: 16 / 9;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--bg);
+  }
+  @media (max-width: 600px) {
+    .deck { gap: 20px; padding: 16px 16px 64px; }
+    .deck-hint { padding: 16px 16px 0; }
+  }
+
+  /* ===== 单页画布：固定 1920×1080，由脚本按外框宽度缩放 ===== */
+  .slide {
+    position: absolute; top: 0; left: 0;
+    width: 1920px; height: 1080px;
+    transform-origin: top left; transform: scale(1);
+    overflow: hidden;
+    background: var(--bg); color: var(--ink);
+    padding: 96px 120px 140px;          /* 底部 140px 只放页码，不放正文 */
+    display: flex; flex-direction: column;
+  }
+  .page-num {
+    position: absolute; right: 120px; bottom: 56px;
+    font-size: 18px; color: var(--muted); letter-spacing: 0.08em;
+  }
+  .nb { white-space: nowrap; }          /* 不允许拆开的词组 */
+
+  /* 通用页头：标题 → 说明，自上而下 */
+  .head { margin-bottom: 56px; }
+  .kicker {
+    font-size: 20px; font-weight: 600; letter-spacing: 0.12em;
+    color: var(--accent-strong); margin-bottom: 20px;
+  }
+  .title {
+    font-size: 60px; line-height: 1.25; font-weight: 700;
+    max-width: 1560px; text-wrap: balance;
+  }
+  .lede {
+    font-size: 30px; line-height: 1.5; color: var(--ink-2);
+    margin-top: 20px; max-width: 1440px;
+  }
+  .body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .conclusion {
+    margin-top: auto; padding-top: 32px;
+    font-size: 30px; line-height: 1.5; font-weight: 600; color: var(--ink);
+  }
+  .conclusion b { color: var(--accent-strong); }
+  .tag {
+    display: inline-block; font-size: 20px; font-weight: 600; line-height: 1;
+    padding: 10px 16px; border-radius: 4px;
+    background: var(--accent-soft); color: var(--accent-strong);
+  }
+  .tag.solid { background: var(--accent); color: var(--on-accent); }
+  .placeholder {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    background: var(--surface-2); color: var(--muted);
+    font-size: 22px; line-height: 1.5; padding: 24px;
+    border: 1px dashed var(--line);
+  }
+
+  /* ===== 照片页：整幅照片 + 文字一侧的渐变遮罩 ===== */
+  .has-photo { color: var(--photo-ink); }
+  .has-photo .photo {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    background-color: #3A3D40;
+  }
+  .has-photo .shade {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(12,13,14,0.86) 0%, rgba(12,13,14,0.62) 42%, rgba(12,13,14,0.08) 78%);
+  }
+  .has-photo > *:not(.photo):not(.shade):not(.photo-missing):not(.photo-note):not(.page-num) { position: relative; }
+  .has-photo .kicker { color: var(--photo-ink-2); }
+  .has-photo .lede, .has-photo .claim-support { color: var(--photo-ink-2); }
+  .has-photo .page-num { position: absolute; color: var(--photo-ink-2); }
+  .photo-note {
+    position: absolute !important; right: 120px; top: 56px;
+    font-size: 18px; color: var(--photo-ink-2);
+  }
+  .photo-missing {
+    position: absolute; right: 160px; top: 50%; transform: translateY(-50%);
+    font-size: 22px; color: #C9C7C1; border: 1px dashed #77797B; padding: 24px 32px;
+  }
+
+  /* ===== 1. 封面 cover ===== */
+  .cover { justify-content: center; }
+  .cover-inner { max-width: 1500px; }
+  .cover-rule { width: 120px; height: 8px; background: var(--accent); margin-bottom: 48px; }
+  .cover-title { font-size: 96px; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+  .cover-sub { font-size: 34px; line-height: 1.5; color: var(--ink-2); margin-top: 32px; }
+  .cover-meta { margin-top: 120px; display: flex; gap: 48px; align-items: baseline; }
+  .cover-speaker { font-size: 32px; font-weight: 600; }
+  .cover-speaker span { font-size: 26px; font-weight: 400; color: var(--ink-2); margin-left: 16px; }
+  .cover-company { font-size: 26px; color: var(--muted); }
+  .cover.has-photo .cover-sub { color: var(--photo-ink-2); }
+  .cover.has-photo .cover-speaker span, .cover.has-photo .cover-company { color: var(--photo-ink-2); }
+
+  /* ===== 2. 画像 portrait：公司、分享人、关键数字合在一页 ===== */
+  .portrait-top { display: grid; grid-template-columns: 1fr 520px; gap: 72px; }
+  .company-name { font-size: 56px; font-weight: 700; line-height: 1.2; }
+  .company-line { font-size: 30px; color: var(--accent-strong); font-weight: 600; margin-top: 16px; }
+  .company-desc { font-size: 28px; line-height: 1.7; color: var(--ink-2); margin-top: 28px; max-width: 1000px; }
+  .speaker { margin-top: 36px; font-size: 28px; font-weight: 600; }
+  .speaker span { font-size: 24px; font-weight: 400; color: var(--ink-2); margin-left: 12px; }
+  .portrait-photo { height: 380px; }
+  .metrics-row {
+    margin-top: auto; display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line); padding-top: 36px;
+  }
+  .metric { padding-right: 32px; }
+  .metric + .metric { padding-left: 32px; border-left: 1px solid var(--line); }
+  .metric-value { font-size: 72px; font-weight: 700; line-height: 1; }
+  .metric-value small { font-size: 28px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+  .metric-label { font-size: 22px; color: var(--ink-2); margin-top: 14px; }
+
+  /* ===== 3. 模块导览 agenda（全场一页） ===== */
+  .agenda-list { list-style: none; }
+  .agenda-item {
+    display: grid; grid-template-columns: 160px 1fr; align-items: baseline;
+    padding: 40px 0; border-top: 1px solid var(--line);
+  }
+  .agenda-item:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-num { font-size: 64px; font-weight: 700; color: var(--accent); }
+  .agenda-title { font-size: 48px; font-weight: 700; line-height: 1.3; }
+  .agenda-sub { font-size: 30px; color: var(--ink-2); margin-top: 10px; line-height: 1.5; }
+
+  /* ===== 4. 模块过渡 module-opener ===== */
+  .module-opener { background: var(--accent-soft); justify-content: center; }
+  .opener-num { font-size: 200px; font-weight: 800; line-height: 1; color: var(--accent); }
+  .opener-title { font-size: 84px; font-weight: 700; line-height: 1.25; margin-top: 48px; max-width: 1500px; text-wrap: balance; }
+  .opener-sub { font-size: 32px; line-height: 1.5; color: var(--ink-2); margin-top: 28px; max-width: 1400px; }
+  .opener-quote { font-size: 30px; line-height: 1.6; color: var(--accent-strong); margin-top: 56px; max-width: 1300px; }
+
+  /* ===== 5. 观点 big-claim ===== */
+  .big-claim { justify-content: center; }
+  .claim { font-size: 80px; line-height: 1.3; font-weight: 700; max-width: 1600px; text-wrap: balance; margin-top: 24px; }
+  .claim-support { font-size: 34px; line-height: 1.6; color: var(--ink-2); margin-top: 40px; max-width: 1400px; }
+  .claim-fact {
+    margin-top: 48px; display: inline-flex; gap: 24px; align-items: baseline;
+    background: var(--surface); padding: 32px 44px; font-size: 30px; line-height: 1.5; max-width: 1400px;
+  }
+  .claim-fact strong { font-size: 60px; color: var(--accent-strong); }
+
+  /* ===== 6. 金句 quote-page ===== */
+  .quote-page { background: var(--surface); justify-content: center; }
+  .quote-mark { font-size: 160px; line-height: 0.6; color: var(--accent); font-weight: 700; height: 80px; }
+  .quote-text { font-size: 64px; line-height: 1.45; font-weight: 600; max-width: 1500px; margin-top: 24px; text-wrap: balance; }
+  .quote-context { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 48px; max-width: 1300px; }
+
+  /* ===== 7. 场景 scene ===== */
+  .scene-grid { display: grid; grid-template-columns: 780px 1fr; gap: 72px; flex: 1; min-height: 0; }
+  .scene-photo { height: 100%; }
+  .scene-story { font-size: 30px; line-height: 1.75; color: var(--ink-2); }
+  .scene-judgment {
+    margin-top: 36px; background: var(--accent-soft); padding: 32px 36px;
+    font-size: 32px; line-height: 1.5; font-weight: 600; color: var(--ink);
+  }
+
+  /* ===== 8. 对比 contrast ===== */
+  .contrast-grid { display: grid; grid-template-columns: 1fr 96px 1fr; align-items: stretch; flex: 1; min-height: 0; }
+  .contrast-col { background: var(--surface); padding: 56px 60px; display: flex; flex-direction: column; justify-content: center; }
+  .contrast-col .tag { align-self: flex-start; }
+  .contrast-col.after { background: var(--accent-soft); }
+  .contrast-col h3 { font-size: 46px; line-height: 1.35; margin-top: 24px; }
+  .contrast-col p { font-size: 32px; line-height: 1.7; color: var(--ink-2); margin-top: 20px; }
+  .contrast-arrow { display: flex; align-items: center; justify-content: center; font-size: 56px; color: var(--accent); }
+
+  /* ===== 9. 矩阵 matrix ===== */
+  .matrix-wrap { display: grid; grid-template-columns: 64px 1fr; grid-template-rows: 1fr 56px; gap: 0; flex: 1; min-height: 0; }
+  .matrix-y { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 22px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .matrix-x { grid-column: 2; font-size: 22px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; }
+  .cell { background: var(--surface); padding: 36px 48px; display: flex; flex-direction: column; justify-content: center; }
+  .cell .tag { align-self: flex-start; }
+  .cell:nth-child(2), .cell:nth-child(3) { background: var(--surface-2); }
+  .cell.focus { background: var(--accent-soft); }
+  .cell h3 { font-size: 38px; line-height: 1.35; }
+  .cell p { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 12px; }
+  .cell .tag { margin-top: 16px; }
+
+  /* ===== 10. 流程 flow ===== */
+  .flow-row { display: flex; align-items: stretch; gap: 0; margin: auto 0; }
+  .step { flex: 1; background: var(--surface); padding: 52px 40px; }
+  .step-num { display: inline-block; font-size: 22px; font-weight: 700; background: var(--accent); color: var(--on-accent); padding: 8px 14px; border-radius: 4px; }
+  .step h3 { font-size: 40px; line-height: 1.3; margin-top: 28px; }
+  .step p { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 16px; }
+  .step-arrow { width: 72px; flex: 0 0 72px; display: flex; align-items: center; justify-content: center; font-size: 44px; color: var(--accent); }
+
+  /* ===== 11. 因果 causal-chain ===== */
+  .chain-row { display: flex; align-items: stretch; margin-top: auto; }
+  .causal-chain .conclusion { margin-top: 56px; margin-bottom: auto; font-size: 36px; }
+  .node { flex: 1; background: var(--surface); padding: 48px 36px; }
+  .node.result { background: var(--accent-soft); }
+  .node-label { font-size: 20px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; }
+  .node h3 { font-size: 36px; line-height: 1.35; margin-top: 16px; }
+  .node p { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 14px; }
+
+  /* ===== 12. 层级 pyramid（上窄下宽：结果 / 做法 / 基础） ===== */
+  .pyramid-stack { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: auto 0; }
+  .layer { display: grid; grid-template-columns: 200px 1fr; align-items: center; gap: 32px; padding: 44px 56px; }
+  .layer.l1 { width: 62%; background: var(--accent); color: var(--on-accent); }
+  .layer.l2 { width: 80%; background: var(--accent-soft); }
+  .layer.l3 { width: 100%; background: var(--surface-2); }
+  .layer h3 { font-size: 40px; }
+  .layer p { font-size: 30px; line-height: 1.5; }
+  .layer.l2 p, .layer.l3 p { color: var(--ink-2); }
+
+  /* ===== 13. 拆解 breakdown（逐层细分，不是逐层增长） ===== */
+  .breakdown-list { display: flex; flex-direction: column; gap: 16px; margin: auto 0; }
+  .bd-row { display: grid; grid-template-columns: 160px 1fr; align-items: center; background: var(--surface); padding: 36px 48px; }
+  .bd-row:nth-child(1) { margin-left: 0; }
+  .bd-row:nth-child(2) { margin-left: 100px; }
+  .bd-row:nth-child(3) { margin-left: 200px; }
+  .bd-row:nth-child(4) { margin-left: 300px; background: var(--accent-soft); }
+  .bd-level { font-size: 36px; font-weight: 700; color: var(--accent-strong); }
+  .bd-text { font-size: 32px; line-height: 1.5; }
+  .bd-text span { color: var(--ink-2); }
+
+  /* ===== 14. 时间线 timeline ===== */
+  .tl { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px; padding-top: 80px; margin: auto 0; }
+  .tl::before { content: ""; position: absolute; left: 0; right: 0; top: 34px; height: 2px; background: var(--line); }
+  .tl-node { position: relative; }
+  .tl-node::before { content: ""; position: absolute; top: -56px; left: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); }
+  .tl-year { font-size: 56px; font-weight: 700; color: var(--accent-strong); }
+  .tl-name { font-size: 38px; font-weight: 700; margin-top: 16px; line-height: 1.35; }
+  .tl-desc { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 14px; }
+  .tl-node.pending .tl-year { color: var(--muted); font-size: 40px; }
+
+  /* ===== 15. 数据 metrics ===== */
+  .metric-big { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .mb { background: var(--surface); padding: 44px 40px; }
+  .mb-value { font-size: 160px; font-weight: 700; line-height: 1; color: var(--ink); }
+  .mb-value small { font-size: 48px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+  .mb-label { font-size: 30px; line-height: 1.5; margin-top: 24px; }
+  .mb-note { font-size: 20px; color: var(--muted); margin-top: 10px; }
+  .compare { display: flex; align-items: center; gap: 72px; background: var(--surface); padding: 80px 72px; margin: auto 0; }
+  .compare .mb-value.after { color: var(--accent-strong); }
+  .compare-arrow { font-size: 88px; color: var(--accent); }
+  .compare-text { font-size: 32px; line-height: 1.6; color: var(--ink-2); max-width: 600px; margin-left: auto; }
+
+  /* ===== 16. 做法 method-grid（我们具体怎么做） ===== */
+  .method-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+  .method { background: var(--surface); padding: 36px 48px; display: flex; flex-direction: column; justify-content: center; }
+  .method:nth-child(2), .method:nth-child(3) { background: var(--surface-2); }
+  .method-head { display: flex; align-items: baseline; gap: 16px; }
+  .method h3 { font-size: 38px; line-height: 1.3; }
+  .method p { font-size: 28px; line-height: 1.55; color: var(--ink-2); margin-top: 14px; }
+  .method q::before, .method q::after { content: none; }
+  .method q { display: block; font-size: 26px; line-height: 1.5; color: var(--accent-strong); margin-top: 12px; }
+
+  /* ===== 17. 决策原因 reason-cards ===== */
+  .reason-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; min-height: 0; }
+  .reason { background: var(--surface); padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; }
+  .reason-num { font-size: 64px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .reason h3 { font-size: 40px; line-height: 1.3; margin-top: 24px; }
+  .reason p { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 16px; }
+  .band { margin-top: 24px; background: var(--accent-soft); padding: 32px 48px; font-size: 32px; line-height: 1.5; font-weight: 600; }
+
+  /* ===== 18. 分阶段做法 stage-method ===== */
+  .stage-row { display: flex; align-items: stretch; flex: 1; min-height: 0; max-height: 560px; margin: auto 0; }
+  .stage { flex: 1; background: var(--surface); padding: 44px 36px; display: flex; flex-direction: column; justify-content: center; }
+  .stage .tag { align-self: flex-start; }
+  .stage:nth-child(odd) { background: var(--surface-2); }
+  .stage h3 { font-size: 38px; line-height: 1.3; margin-top: 24px; }
+  .stage p { font-size: 28px; line-height: 1.6; color: var(--ink-2); margin-top: 14px; }
+  .stage-sep { width: 48px; flex: 0 0 48px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--accent); }
+
+  /* ===== 19. 收尾 closing ===== */
+  .closing { background: var(--accent-soft); justify-content: center; }
+  .closing-label { font-size: 24px; font-weight: 600; color: var(--accent-strong); letter-spacing: 0.1em; }
+  .closing-main { font-size: 72px; line-height: 1.3; font-weight: 700; margin-top: 32px; max-width: 1500px; text-wrap: balance; }
+  .closing-msg { font-size: 30px; line-height: 1.6; color: var(--ink-2); margin-top: 40px; max-width: 1300px; }
+
+  /* ===== 打印：一页 = 一张幻灯片，固定浅色 ===== */
+  @page { size: 13.333in 7.5in; margin: 0; }
+  @media print {
+    :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
+      --accent: #1F4FB8; --accent-strong: #173C8C; --accent-soft: #E6ECF8; --on-accent: #FFFFFF;
+      --canvas: #FFFFFF; --bg: #F4F4F1; --surface: #FFFFFF; --surface-2: #ECECE7;
+      --ink: #1B1D1F; --ink-2: #3E4348; --muted: #6A7076; --line: #D6D7D2;
+    }
+    body { background: #FFFFFF; }
+    .deck-hint { display: none; }
+    .deck { padding: 0; gap: 0; display: block; }
+    .slide-wrapper {
+      width: 13.333in; height: 7.5in; max-width: none; aspect-ratio: auto;
+      border: 0; border-radius: 0; break-after: page; page-break-after: always;
+    }
+    .slide { transform: scale(0.6667) !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-hint">【示例】青禾食品 · 经营分享 ｜ 滚动浏览，键盘 ↑↓ 跳到上一页或下一页，Cmd+P 导出 PDF</div>
+
+<div class="deck">
+
+  <!-- 1. 封面：只放主标题、副标题、分享人、公司；不放数字和序号。≤ 70 字 -->
+  <div class="slide-wrapper">
+    <section class="slide cover" data-page="1" data-role="cover">
+      <div class="cover-inner">
+        <div class="cover-rule"></div>
+        <h1 class="cover-title">【示例】把一款产品，<br>做成顾客记得住的理由</h1>
+        <p class="cover-sub">一家区域食品厂十二年的经营选择</p>
+      </div>
+      <div class="cover-meta">
+        <div class="cover-speaker">林志远<span>创始人、董事长</span></div>
+        <div class="cover-company">青禾食品有限公司</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 2. 画像：公司、分享人、关键数字合在一页。≤ 200 字 -->
+  <div class="slide-wrapper">
+    <section class="slide portrait" data-page="2" data-role="portrait">
+      <div class="portrait-top">
+        <div>
+          <div class="company-name">青禾食品</div>
+          <div class="company-line">做家常面点的区域品牌</div>
+          <p class="company-desc">2012 年从一间小作坊起步，现在有两座工厂，产品进入华南三省的商超和社区店，同时为连锁餐饮做定制供应。</p>
+          <div class="speaker">林志远<span>创始人、董事长，面点学徒出身</span></div>
+        </div>
+        <div class="placeholder portrait-photo">待补：本人正式照片<br>或工厂全景照片</div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric"><div class="metric-value">12<small>年</small></div><div class="metric-label">从小作坊到两座工厂</div></div>
+        <div class="metric"><div class="metric-value">320<small>人</small></div><div class="metric-label">直接员工</div></div>
+        <div class="metric"><div class="metric-value">1.6<small>亿元</small></div><div class="metric-label">2024 年营收</div></div>
+        <div class="metric"><div class="metric-value">4,000<small>家</small></div><div class="metric-label">合作门店</div></div>
+      </div>
+      <div class="page-num">02</div>
+    </section>
+  </div>
+
+  <!-- 3. 模块导览：全场一页，编号和标题与各模块过渡页逐字一致。≤ 220 字 -->
+  <div class="slide-wrapper">
+    <section class="slide agenda" data-page="3" data-role="agenda">
+      <header class="head"><h2 class="title">今天想和大家分享三件事</h2></header>
+      <ol class="agenda-list">
+        <li class="agenda-item"><div class="agenda-num">01</div><div><div class="agenda-title">先确定能做好，再去做大</div><div class="agenda-sub">一款产品为什么磨了一年才上市</div></div></li>
+        <li class="agenda-item"><div class="agenda-num">02</div><div><div class="agenda-title">工厂多了，品质怎么不走样</div><div class="agenda-sub">从老板盯现场，到每个岗位都有标准</div></div></li>
+        <li class="agenda-item"><div class="agenda-num">03</div><div><div class="agenda-title">让三百个人朝一个方向走</div><div class="agenda-sub">招人、带人、留人，我们做对和做错的事</div></div></li>
+      </ol>
+      <div class="page-num">03</div>
+    </section>
+  </div>
+
+  <!-- 4. 模块过渡：大号编号 + 模块标题，可加副标题或一句原话。≤ 100 字 -->
+  <div class="slide-wrapper">
+    <section class="slide module-opener" data-page="4" data-role="module-opener">
+      <div class="opener-num">01</div>
+      <h2 class="opener-title">先确定能做好，再去做大</h2>
+      <p class="opener-sub">一款产品为什么磨了一年才上市</p>
+      <p class="opener-quote">"我不怕慢，我怕顾客买一次就不再来。"</p>
+      <div class="page-num">04</div>
+    </section>
+  </div>
+
+  <!-- 5. 观点：一个强判断 + 一句支撑 + 可选一个事实。≤ 150 字 -->
+  <div class="slide-wrapper">
+    <section class="slide big-claim" data-page="5" data-role="big-claim">
+      <div class="kicker">01 先确定能做好，再去做大</div>
+      <p class="claim">货架上几十种面点，<br>顾客能记住的，往往只有一种</p>
+      <p class="claim-support">我们不追求品类多，而是先做出一款让人愿意回头买的产品，再用它带动其他产品。</p>
+      <div class="claim-fact"><strong>62%</strong><span>的营收来自这一款招牌产品和它的两个口味延伸</span></div>
+      <div class="page-num">05</div>
+    </section>
+  </div>
+
+  <!-- 6. 金句：原话本身有力量时使用。≤ 70 字 -->
+  <div class="slide-wrapper">
+    <section class="slide quote-page" data-page="6" data-role="quote-page">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">找到好吃的参考不难，<br>把那个味道稳定地做出来，才是真功夫。</p>
+      <p class="quote-context">研发那一年，我们跑了四十多家老店，最后只留下一个配方。</p>
+      <div class="page-num">06</div>
+    </section>
+  </div>
+
+  <!-- 7. 场景：一个具体瞬间 + 从中得出的判断。≤ 220 字 -->
+  <div class="slide-wrapper">
+    <section class="slide scene" data-page="7" data-role="scene">
+      <header class="head"><div class="kicker">01 先确定能做好，再去做大</div><h2 class="title">上市第一天，我们差点交不了货</h2></header>
+      <div class="scene-grid">
+        <div class="placeholder scene-photo">待补：早期工厂或产品照片</div>
+        <div>
+          <p class="scene-story">准备了整整一年，第一天订单一来，包装线就卡住了。我和两个合伙人在车间手工装到凌晨三点。第二天一早，经销商打来电话，说门店的货卖空了，问能不能再加一倍。</p>
+          <div class="scene-judgment">那一刻我知道，那一年没有白花。产品立住了，后面的问题都能解决。</div>
+        </div>
+      </div>
+      <div class="page-num">07</div>
+    </section>
+  </div>
+
+  <!-- 8. 对比：改变前后都能具体描述时使用。≤ 160 字 -->
+  <div class="slide-wrapper">
+    <section class="slide contrast" data-page="8" data-role="contrast">
+      <header class="head"><h2 class="title">从"什么好卖做什么"，到"先做透一款"</h2></header>
+      <div class="contrast-grid">
+        <div class="contrast-col"><span class="tag">过去</span><h3>跟着订单走，品类越做越多</h3><p>三年里上了二十多个品类，每个都不差，但没有一个让顾客专门来买。</p></div>
+        <div class="contrast-arrow">→</div>
+        <div class="contrast-col after"><span class="tag solid">现在</span><h3>砍掉一半品类，集中做招牌</h3><p>研发和产能都给招牌产品，其他品类只做它的口味延伸。</p></div>
+      </div>
+      <div class="page-num">08</div>
+    </section>
+  </div>
+
+  <!-- 9. 模块过渡（第二个模块） -->
+  <div class="slide-wrapper">
+    <section class="slide module-opener" data-page="9" data-role="module-opener">
+      <div class="opener-num">02</div>
+      <h2 class="opener-title">工厂多了，品质怎么不走样</h2>
+      <p class="opener-sub">从老板盯现场，到每个岗位都有标准</p>
+      <div class="page-num">09</div>
+    </section>
+  </div>
+
+  <!-- 10. 做法：模块里"我们具体怎么做"，四个有名字的动作。≤ 260 字 -->
+  <div class="slide-wrapper">
+    <section class="slide method-grid-page" data-page="10" data-role="method-grid">
+      <header class="head"><div class="kicker">02 工厂多了，品质怎么不走样</div><h2 class="title">四个做法，让第二座工厂和第一座一样</h2></header>
+      <div class="method-grid">
+        <div class="method"><div class="method-head"><span class="tag">做法 1</span><h3>新厂先跑老流程</h3></div><p>新工厂投产前三个月，骨干全部从老厂调过去，按老厂的流程跑一遍。</p><q>"流程是走出来的，不是写出来的。"</q></div>
+        <div class="method"><div class="method-head"><span class="tag">做法 2</span><h3>标准写到每个岗位</h3></div><p>和面、发酵、蒸制每个环节写清温度、时间和判断方法，新人照着做也不走样。</p></div>
+        <div class="method"><div class="method-head"><span class="tag">做法 3</span><h3>每天抽检一批货</h3></div><p>质检不只看合格率，每天随机抽一批，由管理层亲自试吃。</p></div>
+        <div class="method"><div class="method-head"><span class="tag">做法 4</span><h3>问题当天说清楚</h3></div><p>早会只讲昨天出了什么问题、谁来改、什么时候改完。</p><q>"坏消息要比好消息先到我这里。"</q></div>
+      </div>
+      <div class="page-num">10</div>
+    </section>
+  </div>
+
+  <!-- 11. 流程：动作有先后顺序。≤ 180 字 -->
+  <div class="slide-wrapper">
+    <section class="slide flow" data-page="11" data-role="flow">
+      <header class="head"><h2 class="title">一款新品从想法到上架，要过四道关</h2><p class="lede">每一关都有人签字，不过关就退回上一步。</p></header>
+      <div class="flow-row">
+        <div class="step"><span class="step-num">01</span><h3>对标试做</h3><p>找到市场上最好的同类产品，先做到不比它差。</p></div>
+        <div class="step-arrow">›</div>
+        <div class="step"><span class="step-num">02</span><h3>员工盲测</h3><p>五十名员工盲测打分，低于八分不往下走。</p></div>
+        <div class="step-arrow">›</div>
+        <div class="step"><span class="step-num">03</span><h3>小批试产</h3><p>在一条产线上连续试产两周，看品质是否稳定。</p></div>
+        <div class="step-arrow">›</div>
+        <div class="step"><span class="step-num">04</span><h3>门店试卖</h3><p>二十家门店试卖一个月，复购达标才全面铺货。</p></div>
+      </div>
+      <div class="page-num">11</div>
+    </section>
+  </div>
+
+  <!-- 12. 因果：每一步都能回答"为什么导致下一步"。≤ 180 字 -->
+  <div class="slide-wrapper">
+    <section class="slide causal-chain" data-page="12" data-role="causal-chain">
+      <header class="head"><h2 class="title">品质稳定，最后变成了我们的议价能力</h2></header>
+      <div class="chain-row">
+        <div class="node"><div class="node-label">起点</div><h3>每批货口味一致</h3><p>门店退货率降到 1% 以下</p></div>
+        <div class="step-arrow">›</div>
+        <div class="node"><div class="node-label">于是</div><h3>门店愿意多进货</h3><p>不用担心卖不完、被投诉</p></div>
+        <div class="step-arrow">›</div>
+        <div class="node"><div class="node-label">接着</div><h3>顾客形成复购</h3><p>招牌产品复购率接近六成</p></div>
+        <div class="step-arrow">›</div>
+        <div class="node result"><div class="node-label">结果</div><h3>我们不用再降价</h3><p>三年没有参与渠道价格战</p></div>
+      </div>
+      <p class="conclusion">所以，品质不是成本，<b>是我们谈价格的底气</b>。</p>
+      <div class="page-num">12</div>
+    </section>
+  </div>
+
+  <!-- 13. 拆解：从大目标逐层细分到每天，层级越往下越具体。≤ 160 字 -->
+  <div class="slide-wrapper">
+    <section class="slide breakdown" data-page="13" data-role="breakdown">
+      <header class="head"><h2 class="title">年度目标一层层拆下去，<br>每个人都知道今天要做什么</h2></header>
+      <div class="breakdown-list">
+        <div class="bd-row"><div class="bd-level">全年</div><div class="bd-text">营收 1.8 亿元 <span>· 招牌产品占六成</span></div></div>
+        <div class="bd-row"><div class="bd-level">每月</div><div class="bd-text">每座工厂的产量和损耗目标 <span>· 月初公布</span></div></div>
+        <div class="bd-row"><div class="bd-level">每周</div><div class="bd-text">每条产线的计划和抽检批次 <span>· 周一早会确认</span></div></div>
+        <div class="bd-row"><div class="bd-level">每天</div><div class="bd-text">每个班组的产量、合格率和昨天的问题</div></div>
+      </div>
+      <div class="page-num">13</div>
+    </section>
+  </div>
+
+  <!-- 14. 模块过渡（第三个模块） -->
+  <div class="slide-wrapper">
+    <section class="slide module-opener" data-page="14" data-role="module-opener">
+      <div class="opener-num">03</div>
+      <h2 class="opener-title">让三百个人朝一个方向走</h2>
+      <p class="opener-sub">招人、带人、留人，我们做对和做错的事</p>
+      <div class="page-num">14</div>
+    </section>
+  </div>
+
+  <!-- 15. 决策原因："我们为什么这样选" + 四个理由。≤ 200 字 -->
+  <div class="slide-wrapper">
+    <section class="slide reason-cards" data-page="15" data-role="reason-cards">
+      <header class="head"><h2 class="title">我们为什么坚持从一线提拔管理者</h2></header>
+      <div class="reason-grid">
+        <div class="reason"><div class="reason-num">1</div><h3>懂产品</h3><p>在产线干过的人，知道问题出在哪一步。</p></div>
+        <div class="reason"><div class="reason-num">2</div><h3>服众</h3><p>一线员工更信从身边走出来的班组长。</p></div>
+        <div class="reason"><div class="reason-num">3</div><h3>留得住</h3><p>看得到晋升路径，人就不容易走。</p></div>
+        <div class="reason"><div class="reason-num">4</div><h3>文化不变味</h3><p>自己带出来的人，做事方式和我们一样。</p></div>
+      </div>
+      <div class="band">外部招来的人可以做专业岗位，但带团队的人，我们先从内部找。</div>
+      <div class="page-num">15</div>
+    </section>
+  </div>
+
+  <!-- 16. 层级：底层基础 → 中层做法 → 顶层结果。≤ 140 字 -->
+  <div class="slide-wrapper">
+    <section class="slide pyramid" data-page="16" data-role="pyramid">
+      <header class="head"><h2 class="title">团队稳定，靠的是三层东西一起起作用</h2></header>
+      <div class="pyramid-stack">
+        <div class="layer l1"><h3>结果</h3><p>班组长五年流失率不到一成</p></div>
+        <div class="layer l2"><h3>做法</h3><p>师傅带徒弟、季度晋升评审、管理层每月下班组</p></div>
+        <div class="layer l3"><h3>基础</h3><p>工资按时发、承诺的奖金一定兑现，这是所有事情的前提</p></div>
+      </div>
+      <div class="page-num">16</div>
+    </section>
+  </div>
+
+  <!-- 17. 时间线：原文没有的年份写"年份待补充"，不编造。≤ 180 字 -->
+  <div class="slide-wrapper">
+    <section class="slide timeline" data-page="17" data-role="timeline">
+      <header class="head"><h2 class="title">每一次扩张，都先解决了上一阶段的难题</h2></header>
+      <div class="tl">
+        <div class="tl-node"><div class="tl-year">2012</div><div class="tl-name">小作坊起步</div><div class="tl-desc">三个人、一台蒸柜，给周边早餐店供货</div></div>
+        <div class="tl-node"><div class="tl-year">2016</div><div class="tl-name">第一座工厂</div><div class="tl-desc">招牌产品上市，进入本地商超</div></div>
+        <div class="tl-node"><div class="tl-year">2020</div><div class="tl-name">第二座工厂</div><div class="tl-desc">标准写到岗位，两座工厂品质一致</div></div>
+        <div class="tl-node pending"><div class="tl-year">年份待补充</div><div class="tl-name">进入连锁餐饮</div><div class="tl-desc">为连锁品牌做定制供应</div></div>
+      </div>
+      <div class="page-num">17</div>
+    </section>
+  </div>
+
+  <!-- 18. 数据：大数字讲规模或变化；单位小一号、颜色浅一档。≤ 120 字 -->
+  <div class="slide-wrapper">
+    <section class="slide metrics" data-page="18" data-role="metrics">
+      <header class="head"><h2 class="title">把损耗当成利润来管，<br>一年省下的钱够建一条新产线</h2></header>
+      <div class="compare">
+        <div><div class="mb-value">6.5<small>%</small></div><div class="mb-label">原来的原料损耗率</div></div>
+        <div class="compare-arrow">→</div>
+        <div><div class="mb-value after">2.1<small>%</small></div><div class="mb-label">现在的原料损耗率</div></div>
+        <p class="compare-text">按去年的原料采购额算，一年少浪费约 460 万元。</p>
+      </div>
+      <div class="page-num">18</div>
+    </section>
+  </div>
+
+  <!-- 19. 分阶段做法：按规模阶段讲不同做法，不是流水账。≤ 240 字 -->
+  <div class="slide-wrapper">
+    <section class="slide stage-method" data-page="19" data-role="stage-method">
+      <header class="head"><h2 class="title">在对的阶段，老板做对的事</h2><p class="lede">规模每上一个台阶，我自己的位置就要往后退一步。</p></header>
+      <div class="stage-row">
+        <div class="stage"><span class="tag solid">50 人以内</span><h3>老板亲自干</h3><p>每道工序我都做过，问题出在哪一眼就知道。</p></div>
+        <div class="stage-sep">›</div>
+        <div class="stage"><span class="tag solid">50–150 人</span><h3>退出一线建后台</h3><p>把采购、质检、财务搭起来，现场交给厂长。</p></div>
+        <div class="stage-sep">›</div>
+        <div class="stage"><span class="tag solid">150–300 人</span><h3>靠标准和数据</h3><p>每天看数据，每月看人，不再每天去车间。</p></div>
+        <div class="stage-sep">›</div>
+        <div class="stage"><span class="tag">下一步</span><h3>继续学习</h3><p>管理更多人需要新的方法，这是我现在最想补的课。</p></div>
+      </div>
+      <div class="page-num">19</div>
+    </section>
+  </div>
+
+  <!-- 20. 矩阵：两个维度共同决定判断时使用。≤ 160 字 -->
+  <div class="slide-wrapper">
+    <section class="slide matrix" data-page="20" data-role="matrix">
+      <header class="head"><h2 class="title">选渠道，我们只看两件事：<br>能不能稳定出货，能不能守住价格</h2></header>
+      <div class="matrix-wrap">
+        <div class="matrix-y">价格守得住 ↑</div>
+        <div class="matrix-grid">
+          <div class="cell focus"><h3>社区连锁店</h3><p>出货稳、价格稳，优先投入</p><span class="tag solid">重点</span></div>
+          <div class="cell"><h3>连锁餐饮定制</h3><p>价格稳，但量要逐家谈</p></div>
+          <div class="cell"><h3>大型商超</h3><p>量大，但常被要求促销</p></div>
+          <div class="cell"><h3>线上低价平台</h3><p>量不稳、价格乱，暂时不做</p></div>
+        </div>
+        <div class="matrix-x">出货稳定 →</div>
+      </div>
+      <div class="page-num">20</div>
+    </section>
+  </div>
+
+  <!-- 21. 照片页：整幅照片 + 渐变遮罩，适合观点或场景。AI 生成图要标"示意" -->
+  <div class="slide-wrapper">
+    <section class="slide big-claim has-photo" data-page="21" data-role="big-claim">
+      <div class="photo"></div>
+      <div class="shade"></div>
+      <div class="photo-missing">待补：员工或车间现场照片</div>
+      <div class="kicker">03 让三百个人朝一个方向走</div>
+      <p class="claim">员工在这里买了房、成了家，<br>是我最骄傲的事</p>
+      <p class="claim-support">去年有十一位老员工在附近买了房。他们留下来，不只是因为工资。</p>
+      <div class="page-num">21</div>
+    </section>
+  </div>
+
+  <!-- 22. 收尾：一句话落点 + 一句留言。≤ 100 字 -->
+  <div class="slide-wrapper">
+    <section class="slide closing" data-page="22" data-role="closing">
+      <div class="closing-label">最后想说的一句话</div>
+      <p class="closing-main">慢一点没关系，<br>只要每一步都踩实</p>
+      <p class="closing-msg">谢谢大家。欢迎来工厂看看，也欢迎随时交流。</p>
+      <div class="page-num">22</div>
+    </section>
+  </div>
+
+</div>
+
+<script>
+  // 按外框宽度等比缩放 1920×1080 画布；键盘 ↑↓ 平滑滚动到上一页或下一页
+  (function () {
+    var wrappers = Array.prototype.slice.call(document.querySelectorAll('.slide-wrapper'));
+    function fit() {
+      wrappers.forEach(function (w) {
+        var s = w.querySelector('.slide');
+        if (s) { s.style.transform = 'scale(' + (w.clientWidth / 1920) + ')'; }
+      });
+    }
+    function currentIndex() {
+      var mid = window.innerHeight / 2, best = 0, dist = Infinity;
+      wrappers.forEach(function (w, i) {
+        var r = w.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - mid);
+        if (d < dist) { dist = d; best = i; }
+      });
+      return best;
+    }
+    function go(i) {
+      if (i >= 0 && i < wrappers.length) { wrappers[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    }
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(currentIndex() + 1); }
+      else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); go(currentIndex() - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); go(0); }
+      else if (e.key === 'End') { e.preventDefault(); go(wrappers.length - 1); }
+    });
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</body>
+</html>

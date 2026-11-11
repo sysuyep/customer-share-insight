@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: interview-outline-from-background
+expected_outcome: |
+  产出访谈大纲：不超过 18 个主问题，按他是谁和公司、经营和战略、外部压力、内部团队、学习、愿景和分享意愿的顺序递进；每题有预设追问并用到背景资料；课程只有一个开放入口；不问让对方做总结的大问题；附访谈结束前确认清单和素材清单；不写对应 PPT 第几页。
+context:
+  scaffold_script: place-files.sh
