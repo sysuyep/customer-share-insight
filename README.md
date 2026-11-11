@@ -39,23 +39,19 @@
 
 ## 安装
 
-本仓库是私有的，需要先获得访问权限才能下载。
-
-**用 Claude Code**：在终端运行
+**Claude Code**
 
 ```bash
 git clone https://github.com/sysuyep/customer-share-insight.git ~/.claude/skills/customer-share-insight
 ```
 
-**用 Codex**：在终端运行
+**Codex**
 
 ```bash
 git clone https://github.com/sysuyep/customer-share-insight.git ~/.codex/skills/customer-share-insight
 ```
 
-两个都用，就两条都运行。以后要更新到新版本，进入对应的文件夹运行 `git pull`。
-
-**用 Claude 桌面应用或网页版**：向维护人要打包好的 `customer-share-insight.skill` 文件，在设置的技能页面上传。
+更新时在对应文件夹里运行 `git pull`。
 
 ## 使用示例
 
