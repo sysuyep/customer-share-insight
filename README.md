@@ -39,27 +39,23 @@
 
 ## 安装
 
-### Claude Code 和 Codex
+本仓库是私有的，需要先获得访问权限才能下载。
 
-建议把仓库放在一个位置，再用链接给两边使用：
-
-```bash
-git clone https://github.com/sysuyep/customer-share-insight.git ~/.agents/skills/customer-share-insight
-```
+**用 Claude Code**：在终端运行
 
 ```bash
-ln -s ../../.agents/skills/customer-share-insight ~/.claude/skills/customer-share-insight
+git clone https://github.com/sysuyep/customer-share-insight.git ~/.claude/skills/customer-share-insight
 ```
+
+**用 Codex**：在终端运行
 
 ```bash
-ln -s ../../.agents/skills/customer-share-insight ~/.codex/skills/customer-share-insight
+git clone https://github.com/sysuyep/customer-share-insight.git ~/.codex/skills/customer-share-insight
 ```
 
-以后更新只需要在 `~/.agents/skills/customer-share-insight` 里运行 `git pull`。
+两个都用，就两条都运行。以后要更新到新版本，进入对应的文件夹运行 `git pull`。
 
-### Claude 桌面应用或网页版
-
-把本仓库打包成 `.skill` 文件（可用 skill-creator 自带的打包脚本），在技能设置里上传。
+**用 Claude 桌面应用或网页版**：向维护人要打包好的 `customer-share-insight.skill` 文件，在设置的技能页面上传。
 
 ## 使用示例
 
